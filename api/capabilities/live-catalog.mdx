@@ -1,47 +1,225 @@
 ---
 title: Live Capabilities Catalog
-description: Where to browse the current capability list and auto-generated endpoint docs.
+description: Auto-generated capability list and input schemas from the live discovery endpoint.
 ---
 
-## Two sources of truth
+This page is auto-generated from:
 
-### 1. Live discovery endpoint (runtime truth)
+- `https://developer.api.receiptor.ai/v1/capabilities`
 
-Use this for the currently available capabilities in the target environment:
+Last generated: `2026-03-09T08:32:50.283Z`
 
-```bash
-curl -s https://developer.api.receiptor.ai/v1/capabilities
+## Capabilities
+
+| Identifier | Slug | Description | Permissions |
+| --- | --- | --- | --- |
+| `bulkEditDocuments` | - | Bulk edit receipts and invoices. Supports dry-run preview (default) and execute modes. Preview returns matching documents with proposed changes and available merchants/categories for context. | `documents:write` |
+| `countDocuments` | - | Count receipts and aggregate data. Use for spending totals and financial analysis. Supports grouping by merchant, category, date, etc. Gets ALL matching documents. | `documents:read` |
+| `searchDocuments` | - | Search, filter, and retrieve user's receipts and invoices. Supports text search, filtering by document type, export status, date ranges, sorting, and semantic similarity. | `documents:read` |
+
+## Schemas
+
+### `bulkEditDocuments`
+
+Bulk edit receipts and invoices. Supports dry-run preview (default) and execute modes. Preview returns matching documents with proposed changes and available merchants/categories for context.
+
+Permissions:
+- `documents:write`
+
+Input schema:
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query to find documents (optional)"
+    },
+    "merchant": {
+      "type": "string",
+      "description": "Specific merchant to filter for editing"
+    },
+    "category": {
+      "type": "string",
+      "description": "Specific category to filter for editing"
+    },
+    "dateFrom": {
+      "type": "string",
+      "description": "Start date filter (ISO format)"
+    },
+    "dateTo": {
+      "type": "string",
+      "description": "End date filter (ISO format)"
+    },
+    "changes": {
+      "type": "object",
+      "properties": {
+        "merchant": {
+          "type": "string",
+          "description": "New merchant name to apply"
+        },
+        "category": {
+          "type": "string",
+          "description": "New category to apply"
+        }
+      },
+      "additionalProperties": false,
+      "description": "Changes to apply to matching documents"
+    },
+    "dryRun": {
+      "type": "boolean",
+      "default": true,
+      "description": "If true, shows preview without making changes. If false, executes the bulk edit."
+    }
+  },
+  "required": [
+    "changes"
+  ],
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
 ```
 
-This returns each capability with:
+### `countDocuments`
 
-- `name`
-- `slug`
-- `description`
-- `permissions`
-- `inputSchema`
+Count receipts and aggregate data. Use for spending totals and financial analysis. Supports grouping by merchant, category, date, etc. Gets ALL matching documents.
 
-### 2. API Reference tab (OpenAPI-generated docs)
+Permissions:
+- `documents:read`
 
-The API Reference in this docs site is generated from:
-
-- `https://developer.api.receiptor.ai/openapi.json`
-
-The backend generates capability execute paths from the capability registry, so capability endpoint docs stay aligned with backend definitions.
-
-## Quick checks
-
-CLI:
-
-```bash
-receiptor list
+Input schema:
+```json
+{
+  "type": "object",
+  "properties": {
+    "filters": {
+      "type": "object",
+      "additionalProperties": {},
+      "description": "Advanced MongoDB filters (optional). Only allowed fields: currency, paymentMethod, paymentMethodEnding, fromEmail, toEmail, summary, taxAmount, subtotal, isRecurring, recurringType. Supports safe operators: $eq, $gt, $gte, $lt, $lte, $ne, $in, $nin, $regex, $exists, $and, $or. Example: { currency: { $in: ['usd', 'eur'] }, amount: { $gt: 1000 } }"
+    },
+    "groupBy": {
+      "type": "string",
+      "description": "Field to group by for aggregation (e.g., 'merchant', 'category', 'date')"
+    },
+    "merchant": {
+      "type": "string",
+      "description": "Filter by merchant name (case-insensitive, partial match)"
+    },
+    "category": {
+      "type": "string",
+      "description": "Filter by category (case-insensitive, partial match)"
+    },
+    "dateFrom": {
+      "type": "string",
+      "description": "Start date filter (ISO format)"
+    },
+    "dateTo": {
+      "type": "string",
+      "description": "End date filter (ISO format)"
+    },
+    "docType": {
+      "type": "string",
+      "enum": [
+        "invoice",
+        "receipt"
+      ],
+      "description": "Filter by document type"
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
 ```
 
-MCP:
+### `searchDocuments`
 
-1. Call `tools/list`
-2. Look for tool names like `documents_search`, `documents_get`, `workspaces_list`
+Search, filter, and retrieve user's receipts and invoices. Supports text search, filtering by document type, export status, date ranges, sorting, and semantic similarity.
 
-## Important
+Permissions:
+- `documents:read`
 
-Do not rely on hardcoded capability lists in docs pages. Always verify against discovery or API Reference.
+Input schema:
+```json
+{
+  "type": "object",
+  "properties": {
+    "query": {
+      "type": "string",
+      "description": "Search query for receipts/invoices (merchants, items, categories, etc.)"
+    },
+    "limit": {
+      "type": "number",
+      "default": 5,
+      "description": "Number of results to return"
+    },
+    "docType": {
+      "type": "string",
+      "enum": [
+        "invoice",
+        "receipt"
+      ],
+      "description": "Filter by document type"
+    },
+    "sortBy": {
+      "type": "string",
+      "default": "docDate",
+      "description": "Field to sort by (docDate, amount, merchant, etc.)"
+    },
+    "sortOrder": {
+      "type": "number",
+      "default": -1,
+      "description": "Sort order: 1 for ascending, -1 for descending"
+    },
+    "dateFrom": {
+      "type": "string",
+      "description": "Start date filter (ISO format)"
+    },
+    "dateTo": {
+      "type": "string",
+      "description": "End date filter (ISO format)"
+    },
+    "useSearch": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to use text/semantic search"
+    },
+    "searchType": {
+      "type": "string",
+      "enum": [
+        "similarity",
+        "mmr"
+      ],
+      "default": "mmr",
+      "description": "Search strategy: 'similarity' for specific merchants/exact matches, 'mmr' for diverse/exploratory results"
+    },
+    "exportStatus": {
+      "type": "string",
+      "enum": [
+        "all",
+        "exported",
+        "not-exported"
+      ],
+      "description": "Filter by integration export status: 'exported' for documents sent to integrations, 'not-exported' for documents not yet sent, 'all' or omit for no filter"
+    },
+    "outputMode": {
+      "type": "string",
+      "enum": [
+        "compact",
+        "complete"
+      ],
+      "default": "compact",
+      "description": "Output format: 'compact' returns essential fields (merchant, amount, date, category), 'complete' returns all available fields"
+    },
+    "requiredFields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Additional fields to include regardless of output mode (e.g., ['exportRecords', 'currency'] to always show these)"
+    }
+  },
+  "additionalProperties": false,
+  "$schema": "http://json-schema.org/draft-07/schema#"
+}
+```

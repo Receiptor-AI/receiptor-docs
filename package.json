@@ -4,8 +4,9 @@
   "private": true,
   "description": "Receiptor AI developer documentation",
   "scripts": {
-    "dev": "npx -y mintlify@latest dev --port 3333",
-    "dev:default": "npx -y mintlify@latest dev",
-    "mint:install": "npx -y mintlify@latest install"
+    "capabilities:sync": "node scripts/sync-capabilities.mjs",
+    "capabilities:sync:staging": "RECEIPTOR_CAPABILITIES_URL=https://staging.developer.api.receiptor.ai/v1/capabilities node scripts/sync-capabilities.mjs",
+    "dev": "npx -y mint@latest dev --port 3333",
+    "dev:default": "npx -y mint@latest dev"
   }
 }
