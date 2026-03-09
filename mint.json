@@ -57,6 +57,7 @@
     {
       "group": "Capabilities",
       "pages": [
+        "api/capabilities/live-catalog",
         "api/capabilities/overview",
         "api/capabilities/discover",
         "api/capabilities/execute"

@@ -1,0 +1,47 @@
+---
+title: Live Capabilities Catalog
+description: Where to browse the current capability list and auto-generated endpoint docs.
+---
+
+## Two sources of truth
+
+### 1. Live discovery endpoint (runtime truth)
+
+Use this for the currently available capabilities in the target environment:
+
+```bash
+curl -s https://developer.api.receiptor.ai/v1/capabilities
+```
+
+This returns each capability with:
+
+- `name`
+- `slug`
+- `description`
+- `permissions`
+- `inputSchema`
+
+### 2. API Reference tab (OpenAPI-generated docs)
+
+The API Reference in this docs site is generated from:
+
+- `https://developer.api.receiptor.ai/openapi.json`
+
+The backend generates capability execute paths from the capability registry, so capability endpoint docs stay aligned with backend definitions.
+
+## Quick checks
+
+CLI:
+
+```bash
+receiptor list
+```
+
+MCP:
+
+1. Call `tools/list`
+2. Look for tool names like `documents_search`, `documents_get`, `workspaces_list`
+
+## Important
+
+Do not rely on hardcoded capability lists in docs pages. Always verify against discovery or API Reference.
