@@ -1,21 +1,36 @@
 ---
-title: 'Introduction'
-description: 'Example section for showcasing API endpoints'
+title: API Overview
+description: External API surface and capability-first model.
 ---
 
-<Note>
-  If you're not looking to build API reference documentation, you can delete
-  this section by removing the api-reference folder.
-</Note>
+## Capability-first architecture
 
-## Welcome
+Receiptor capabilities are defined once in backend and exposed through:
 
-There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
+- External REST API (`/v1/capabilities/*`)
+- MCP tools
+- CLI commands
 
-<Card
-  title="Plant Store Endpoints"
-  icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
->
-  View the OpenAPI specification file
-</Card>
+This keeps validation and behavior aligned across interfaces.
+
+## Core external endpoints
+
+- `GET /v1/capabilities` (public discovery)
+- `POST /v1/capabilities/:slug` (execute)
+- `GET /v1/workspaces` (workspace listing for API key context)
+
+## API reference generation
+
+The **API Reference** tab is generated from live OpenAPI:
+
+- `https://developer.api.receiptor.ai/openapi.json`
+
+Capability paths in OpenAPI are generated from the backend capability registry.
+
+Continue with:
+
+- [API Key Auth](/api/authentication/api-keys)
+- [Workspace Context](/api/workspaces/context)
+- [Capabilities Overview](/api/capabilities/overview)
+- [MCP Introduction](/api/mcp/introduction)
+- [CLI Overview](/api/cli/introduction)

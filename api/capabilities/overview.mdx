@@ -1,0 +1,64 @@
+---
+title: Capabilities Overview
+description: Discover and execute Receiptor capabilities through the external API.
+---
+
+## Endpoints
+
+Base host: `https://developer.api.receiptor.ai`
+
+- `GET /v1/capabilities` (public)
+- `POST /v1/capabilities/:slug` (API key required)
+
+Use capability `slug` values, for example `documents.search`.
+
+## Authentication
+
+Execution endpoints accept API key in:
+
+- `Authorization: Bearer sk_...`
+- `X-Receiptor-API-Key: sk_...`
+- `apiKey` query/body fallback
+
+Most capabilities require workspace context. Provide:
+
+- `X-Receiptor-Org-Id: org_...`
+
+`workspaces.list` is intentionally unscoped so you can discover available orgs first.
+
+## Keep capability docs current
+
+Do not hardcode capability lists.
+
+Always validate against live discovery:
+
+```bash
+curl -s https://developer.api.receiptor.ai/v1/capabilities
+```
+
+Use the API Reference tab (OpenAPI) for endpoint-level schema docs.
+
+## Response envelope
+
+```json
+{
+  "success": true,
+  "code": 200,
+  "data": {
+    "result": {}
+  }
+}
+```
+
+Error shape:
+
+```json
+{
+  "success": false,
+  "code": 400,
+  "error": {
+    "errorCode": 400,
+    "errorMessage": "..."
+  }
+}
+```

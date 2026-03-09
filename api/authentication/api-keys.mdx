@@ -1,0 +1,41 @@
+---
+title: API Keys
+description: How to create API keys and use them with workspace context.
+---
+
+## Create an API key in the app
+
+In Receiptor App:
+
+1. Open **Account -> API Keys** (`/account/api-keys`).
+2. Click **Add New API Key**.
+3. Copy the generated `sk_...` value.
+
+Important: the raw key is only shown once.
+
+## Where API keys are accepted
+
+For API execution routes, send key in one of:
+
+- `Authorization: Bearer sk_...`
+- `X-Receiptor-API-Key: sk_...`
+- `apiKey` query/body fallback
+
+Recommended: `Authorization: Bearer ...`
+
+## Workspace scope behavior
+
+Receiptor operations run in `userId + orgId` context.
+
+- Most capabilities require `orgId` context.
+- Send `X-Receiptor-Org-Id: org_...` when calling REST endpoints directly.
+- Use `GET /v1/workspaces` to discover allowed org IDs.
+
+If org context is missing on org-required capabilities, API returns `Organization context required`.
+
+If an API key is workspace-restricted and the org does not match, API returns `This API key is restricted to a different workspace`.
+
+## OAuth vs API keys
+
+- API keys: best for direct REST and CLI usage.
+- OAuth tokens: required for MCP protected methods (`tools/call`) and are authorized per workspace.

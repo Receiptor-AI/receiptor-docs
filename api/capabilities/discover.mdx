@@ -1,0 +1,33 @@
+---
+title: Discover Capabilities
+description: Retrieve the capability catalog and input schemas.
+---
+
+## Endpoint
+
+`GET /v1/capabilities`
+
+No authentication required.
+
+## Example
+
+```bash
+curl -s https://developer.api.receiptor.ai/v1/capabilities
+```
+
+## What you get
+
+The response contains a `capabilities` array with:
+
+- `name` (internal)
+- `slug` (external execution identifier)
+- `description`
+- `permissions`
+- `inputSchema` (JSON Schema generated from Zod)
+
+## Typical usage
+
+1. Fetch discovery output.
+2. Select capability by `slug`.
+3. Build request body from `inputSchema`.
+4. Execute with `POST /v1/capabilities/:slug`.

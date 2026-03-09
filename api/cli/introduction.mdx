@@ -1,0 +1,59 @@
+---
+title: CLI Overview
+description: Use the Receiptor CLI to manage workspace context and execute capabilities.
+---
+
+## What the CLI does
+
+The CLI is a thin client over external API endpoints.
+
+It supports:
+
+- API key authentication
+- workspace context management
+- capability discovery and execution
+
+## Install
+
+```bash
+npm i -g @receiptor/cli
+```
+
+## Built-in commands
+
+- `receiptor auth <api-key>`
+- `receiptor auth --status`
+- `receiptor workspace --status`
+- `receiptor workspace list`
+- `receiptor workspace use <org-id>`
+- `receiptor workspace clear`
+- `receiptor list`
+- `receiptor <resource> <action> [flags]`
+
+## Default behavior
+
+- Default host: `https://developer.api.receiptor.ai`
+- API key source:
+  - `RECEIPTOR_API_KEY`, or
+  - local config file
+- Workspace source:
+  - `RECEIPTOR_ORG_ID`, or
+  - local config file (`receiptor workspace use`)
+
+## Config file
+
+CLI stores config at:
+
+- `~/.receiptor/config.json`
+
+Fields include:
+
+- `apiKey`
+- `host`
+- `orgId`
+
+## Host override
+
+```bash
+RECEIPTOR_HOST=https://staging.developer.api.receiptor.ai receiptor list
+```

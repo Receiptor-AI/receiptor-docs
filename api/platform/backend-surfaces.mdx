@@ -1,0 +1,57 @@
+---
+title: Backend Surface Map
+description: Host/path/auth mapping for API, MCP, and CLI.
+---
+
+## Integration surfaces
+
+The backend exposes three integration surfaces:
+
+- External API
+- MCP server (JSON-RPC)
+- CLI (wrapper over External API)
+
+## Host and route mapping
+
+### External API
+
+- Host: `developer.api.receiptor.ai`
+- Base path: `/v1`
+- Discovery: `GET /v1/capabilities`
+- Execute: `POST /v1/capabilities/:slug`
+- Workspaces: `GET /v1/workspaces`
+- Auth: API key for execute/workspace routes
+
+### MCP
+
+- Host options:
+  - `api.receiptor.ai/mcp/*`
+  - `mcp.receiptor.ai/*`
+- JSON-RPC endpoint:
+  - `POST /mcp/` on API host
+  - `POST /` on MCP host
+- Protected method: `tools/call` (OAuth bearer token required)
+
+### CLI
+
+- Binary: `receiptor`
+- Default host: `https://developer.api.receiptor.ai`
+- Built-in commands: `auth`, `workspace`, `list`
+- Capability execution: `receiptor <resource> <action>`
+
+## Workspace context rules
+
+- API key calls can set workspace via `X-Receiptor-Org-Id`.
+- CLI sets the same header using `receiptor workspace use <org-id>` (or `RECEIPTOR_ORG_ID`).
+- MCP OAuth tokens are authorized for a selected `org_id`; switching workspace requires re-authorization.
+
+## Environment host matrix
+
+- Production:
+  - API: `https://api.receiptor.ai`
+  - External API: `https://developer.api.receiptor.ai`
+  - MCP: `https://mcp.receiptor.ai`
+- Staging:
+  - API: `https://staging.api.receiptor.ai`
+  - External API: `https://staging.developer.api.receiptor.ai`
+  - MCP: `https://staging.mcp.receiptor.ai`

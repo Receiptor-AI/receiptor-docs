@@ -1,0 +1,47 @@
+---
+title: Workspace Context
+description: List workspaces and apply organization context in API, CLI, and MCP.
+---
+
+## Why workspace context exists
+
+Receiptor users can belong to multiple workspaces. Non-session interfaces (API key, CLI, MCP) must run in an explicit workspace context.
+
+## List available workspaces (REST)
+
+```bash
+curl -s https://developer.api.receiptor.ai/v1/workspaces \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY"
+```
+
+Response includes:
+
+- `currentOrgId`
+- `workspaces[]` with `orgId`, `orgName`, `role`, `isCurrent`
+
+## Apply workspace to capability execution (REST)
+
+```bash
+curl -s -X POST https://developer.api.receiptor.ai/v1/capabilities/documents.search \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY" \
+  -H "X-Receiptor-Org-Id: org_..." \
+  -H "Content-Type: application/json" \
+  -d '{"query":"uber"}'
+```
+
+## CLI workspace commands
+
+```bash
+receiptor workspace --status
+receiptor workspace list
+receiptor workspace use org_...
+receiptor workspace clear
+```
+
+CLI uses selected workspace by sending `X-Receiptor-Org-Id` on capability calls.
+
+`RECEIPTOR_ORG_ID` env var overrides config for one-off runs.
+
+## Capability equivalent
+
+`workspaces.list` is also exposed in capability discovery and MCP tooling for workspace listing use cases.

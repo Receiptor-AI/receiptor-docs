@@ -1,0 +1,57 @@
+---
+title: MCP OAuth2
+description: Dynamic client registration, scopes, and workspace-bound authorization flow.
+---
+
+## Metadata endpoints
+
+Protected Resource Metadata:
+
+- `GET /mcp/.well-known/oauth-protected-resource` (or MCP host root equivalent)
+
+Authorization Server Metadata:
+
+- `GET /mcp/.well-known/oauth-authorization-server` (or MCP host root equivalent)
+
+Use metadata as the source of truth for current OAuth endpoints.
+
+## Dynamic client registration
+
+Register a client with:
+
+- `POST /v1/oauth/register`
+
+Common fields:
+
+- `client_name`
+- `redirect_uris`
+- optional OAuth metadata (`grant_types`, `response_types`, `scope`, etc.)
+
+## Authorization and token flow
+
+1. Read authorization metadata.
+2. Send user to `authorization_endpoint` with PKCE (`code_challenge`, `code_challenge_method=S256`).
+3. User selects workspace in Receiptor authorization UI.
+4. Exchange code at `token_endpoint`.
+
+MCP tokens are workspace-bound through selected `org_id`.
+To switch workspace, re-authorize with the target `org_id`.
+
+## Supported scopes
+
+Current scopes include:
+
+- `all`
+- `read_documents`
+- `write_documents`
+- `read_time_capsules`
+- `write_time_capsules`
+- `read_currency`
+- `read_integrations`
+- `write_integrations`
+- `read_rules`
+- `write_rules`
+- `read_workspaces`
+
+Unrecognized scopes are rejected with `invalid_scope`.
+Request minimum required scope set.

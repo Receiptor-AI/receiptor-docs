@@ -1,0 +1,49 @@
+---
+title: Execute Capability
+description: Execute a capability by slug using API key authentication.
+---
+
+## Endpoint
+
+`POST /v1/capabilities/:slug`
+
+Authentication: API key required.
+
+## Example: `documents.search`
+
+```bash
+curl -s -X POST https://developer.api.receiptor.ai/v1/capabilities/documents.search \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY" \
+  -H "X-Receiptor-Org-Id: $RECEIPTOR_ORG_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "airbnb",
+    "limit": 5,
+    "docType": "receipt",
+    "outputMode": "compact"
+  }'
+```
+
+## Example: `documents.bulk-edit` dry run
+
+```bash
+curl -s -X POST https://developer.api.receiptor.ai/v1/capabilities/documents.bulk-edit \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY" \
+  -H "X-Receiptor-Org-Id: $RECEIPTOR_ORG_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "merchant": "Uber",
+    "changes": { "category": "Transport" },
+    "dryRun": true
+  }'
+```
+
+`documents.bulk-edit` defaults to preview mode (`dryRun: true`). Set `dryRun: false` to apply changes.
+
+## Common errors
+
+- `401` missing/invalid API key
+- `401` missing org context (`Organization context required`)
+- `403` API key restricted to a different workspace
+- `404` unknown capability slug
+- `400` input validation errors

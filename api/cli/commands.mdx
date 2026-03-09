@@ -1,0 +1,58 @@
+---
+title: CLI Commands
+description: Command reference for API key auth, workspace context, and capability execution.
+---
+
+## Authenticate
+
+```bash
+receiptor auth sk_...
+receiptor auth --status
+```
+
+## Workspace context commands
+
+```bash
+receiptor workspace --status
+receiptor workspace list
+receiptor workspace use org_...
+receiptor workspace clear
+```
+
+`workspace list` calls `GET /v1/workspaces`.
+
+Capability execution uses selected workspace by setting `X-Receiptor-Org-Id`.
+
+## List capabilities
+
+```bash
+receiptor list
+```
+
+Calls `GET /v1/capabilities` and prints capability metadata.
+
+## Execute capability with flags
+
+```bash
+receiptor documents search --query "uber" --limit 5 --outputMode compact
+```
+
+## Execute using JSON input
+
+```bash
+receiptor documents search '{"query":"uber","limit":5}'
+```
+
+## Execute using stdin
+
+```bash
+echo '{"merchant":"Uber","changes":{"category":"Transport"},"dryRun":true}' | receiptor documents bulk-edit
+```
+
+## Show input schema help
+
+```bash
+receiptor documents search --help
+```
+
+This fetches discovery output and prints selected capability `inputSchema`.

@@ -1,32 +1,23 @@
-# Mintlify Starter Kit
+# Receiptor Docs (Mintlify)
 
-Click on `Use this template` to copy the Mintlify starter kit. The starter kit contains examples including
+This app contains Receiptor developer documentation focused on public integration contracts:
 
-- Guide pages
-- Navigation
-- Customizations
-- API Reference pages
-- Use of popular components
+- API key auth and workspace context
+- External API and capabilities
+- MCP transport and OAuth2
+- CLI usage
 
-### Development
+## Local development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the documentation changes locally. To install, use the following command
+From this directory:
 
-```
-npm i -g mintlify
-```
-
-Run the following command at the root of your documentation (where mint.json is)
-
-```
-mintlify dev
+```bash
+npm run dev
 ```
 
-### Publishing Changes
+The docs run on `http://localhost:3333`.
 
-Install our Github App to autopropagate changes from youre repo to your deployment. Changes will be deployed to production automatically after pushing to the default branch. Find the link to install on your dashboard. 
+## Notes
 
-#### Troubleshooting
-
-- Mintlify dev isn't running - Run `mintlify install` it'll re-install dependencies.
-- Page loads as a 404 - Make sure you are running in a folder with `mint.json`
+- `openapi` points to `https://developer.api.receiptor.ai/openapi.json`.
+- Capability schemas are generated from backend Zod definitions and surfaced through `GET /v1/capabilities`.

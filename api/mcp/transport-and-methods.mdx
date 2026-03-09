@@ -1,0 +1,72 @@
+---
+title: MCP Transport & Methods
+description: JSON-RPC methods, auth behavior, and request examples.
+---
+
+## JSON-RPC endpoint
+
+Send POST requests to MCP root:
+
+- `POST /mcp/` on API host
+- `POST /` on MCP host
+
+`GET` and `DELETE` on MCP root return `405 Method Not Allowed`.
+
+## Example: initialize
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "initialize",
+  "params": {}
+}
+```
+
+## Example: list tools
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 2,
+  "method": "tools/list"
+}
+```
+
+## Example: call capability tool
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "documents_search",
+    "arguments": {
+      "query": "notion",
+      "limit": 5
+    }
+  }
+}
+```
+
+## Example: list workspaces via MCP capability tool
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
+  "method": "tools/call",
+  "params": {
+    "name": "workspaces_list",
+    "arguments": {}
+  }
+}
+```
+
+## Error behavior
+
+- Missing bearer token for protected method: JSON-RPC unauthorized error
+- Unknown tool name: JSON-RPC invalid params error
+- Capability execution failure: tool response includes error text
+- OAuth failures include `WWW-Authenticate: Bearer ...` challenge headers

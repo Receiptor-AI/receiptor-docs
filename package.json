@@ -1,11 +1,11 @@
 {
-  "name": "receiptor-docs",
+  "name": "@receiptor/docs",
   "version": "1.0.0",
-  "description": "Receiptor AI API Documentation",
-  "main": "index.js",
+  "private": true,
+  "description": "Receiptor AI developer documentation",
   "scripts": {
-    "dev": "mintlify dev --port 3333"
-  },
-  "author": "",
-  "license": "ISC"
+    "dev": "npx -y mintlify@latest dev --port 3333",
+    "dev:default": "npx -y mintlify@latest dev",
+    "mint:install": "npx -y mintlify@latest install"
+  }
 }

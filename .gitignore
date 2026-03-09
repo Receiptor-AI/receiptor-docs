@@ -1,3 +1,7 @@
+node_modules/
+.mintlify/
+.DS_Store
+
 /.idea/modules.xml
 /.idea/receiptor-docs.iml
 /.idea/workspace.xml

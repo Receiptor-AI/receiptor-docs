@@ -1,0 +1,49 @@
+---
+title: MCP Introduction
+description: Receiptor MCP server, transport, tools, and workspace behavior.
+---
+
+## Endpoints
+
+MCP is available via:
+
+- API host prefix: `https://api.receiptor.ai/mcp`
+- Dedicated MCP host root: `https://mcp.receiptor.ai`
+
+## Protocol
+
+- Transport: Streamable HTTP
+- Payload format: JSON-RPC 2.0
+- Tool registration: dynamic from backend capability registry
+
+## Public methods
+
+No bearer token required:
+
+- `initialize`
+- `notifications/initialized`
+- `tools/list`
+- `prompts/list`
+- `resources/list`
+- `ping`
+
+## Protected methods
+
+`tools/call` requires OAuth bearer token.
+
+## Tool naming
+
+Capability tools are generated from capability slugs by replacing `.` with `_`.
+
+Examples:
+
+- `documents.search` -> `documents_search`
+- `workspaces.list` -> `workspaces_list`
+
+## Native MCP-only tools
+
+- `get_server_info`
+- `workspace_get_context`
+- `workspace_switch`
+
+`workspace_switch` validates target workspace and explains that MCP workspace switching requires OAuth re-authorization with a different `org_id`.

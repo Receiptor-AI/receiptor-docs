@@ -1,86 +1,71 @@
 ---
-title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+title: Quickstart
+description: Create an API key, select workspace context, and run your first calls.
 ---
 
-## Setup your development
+## 1. Create an API key
 
-Learn how to update your docs locally and and deploy them to the public.
+In the app:
 
-### Edit and preview
+1. Open **Account -> API Keys** (`/account/api-keys`).
+2. Click **Add New API Key**.
+3. Copy the key immediately.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+API keys are shown only once after creation.
 
-### Deploy your changes
+## 2. List your workspaces
 
-<AccordionGroup>
+Use the API key to fetch available organizations:
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+```bash
+curl -s https://developer.api.receiptor.ai/v1/workspaces \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY"
+```
 
-</AccordionGroup>
+Pick the `orgId` you want to operate in.
 
-## Update your docs
+## 3. Discover capabilities
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+```bash
+curl -s https://developer.api.receiptor.ai/v1/capabilities
+```
 
-<CardGroup>
+Use capability `slug` values for execution (for example, `documents.search`).
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+## 4. Execute a capability with workspace context
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+```bash
+curl -s -X POST https://developer.api.receiptor.ai/v1/capabilities/documents.search \
+  -H "Authorization: Bearer $RECEIPTOR_API_KEY" \
+  -H "X-Receiptor-Org-Id: $RECEIPTOR_ORG_ID" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "uber",
+    "limit": 5,
+    "outputMode": "compact"
+  }'
+```
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+## 5. Run the same flow in CLI
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
+```bash
+receiptor auth sk_...
+receiptor workspace list
+receiptor workspace use org_...
+receiptor list
+receiptor documents search --query "uber" --limit 5
+```
 
-</CardGroup>
+## 6. Validate MCP tools
+
+Using your MCP client:
+
+1. Call `initialize`
+2. Call `tools/list`
+3. Call `tools/call` with a capability tool name such as `documents_search`
+
+## Next
+
+- [API Key Auth](/api/authentication/api-keys)
+- [Workspace Context](/api/workspaces/context)
+- [Capabilities Overview](/api/capabilities/overview)

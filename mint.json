@@ -32,59 +32,49 @@
     }
   ],
   "openapi": "https://developer.api.receiptor.ai/openapi.json",
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://docs.receiptor.ai"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://receiptor.ai/blog"
-    }
-  ],
   "navigation": [
     {
       "group": "Get Started",
       "pages": [
         "introduction",
-        "quickstart",
-        "development"
+        "quickstart"
       ]
     },
     {
-      "group": "Essentials",
+      "group": "Authentication",
       "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation"
+        "api/authentication/api-keys"
       ]
     },
     {
-      "group": "API Documentation",
+      "group": "API",
       "pages": [
-        "api/introduction"
+        "api/introduction",
+        "api/platform/backend-surfaces",
+        "api/workspaces/context"
       ]
     },
     {
-      "group": "OAuth2",
+      "group": "Capabilities",
       "pages": [
-        "api/oauth2/request-authorization-code",
-        "api/oauth2/request-access-token"
+        "api/capabilities/overview",
+        "api/capabilities/discover",
+        "api/capabilities/execute"
       ]
     },
     {
-      "group": "Time Capsules",
+      "group": "MCP",
       "pages": [
-        "api/time-capsules/get-all"
+        "api/mcp/introduction",
+        "api/mcp/transport-and-methods",
+        "api/mcp/oauth"
+      ]
+    },
+    {
+      "group": "CLI",
+      "pages": [
+        "api/cli/introduction",
+        "api/cli/commands"
       ]
     }
   ],
