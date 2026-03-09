@@ -1,0 +1,112 @@
+---
+title: MCP Client Setup
+description: Configure Receiptor MCP in major clients (Claude Code, Cursor, Windsurf, Cline).
+---
+
+## Endpoint
+
+Use the dedicated MCP host:
+
+- `https://mcp.receiptor.ai`
+
+This endpoint supports Streamable HTTP and OAuth2 metadata discovery.
+
+## Claude Code
+
+Add Receiptor as a remote HTTP MCP server:
+
+```bash
+claude mcp add --transport http receiptor https://mcp.receiptor.ai
+```
+
+Then inside Claude Code:
+
+1. Run `/mcp`.
+2. Authenticate with OAuth.
+3. Select the workspace you want to authorize.
+
+Useful commands:
+
+```bash
+claude mcp list
+claude mcp get receiptor
+claude mcp remove receiptor
+```
+
+## Cursor
+
+Cursor supports MCP via project or global config:
+
+- Project: `.cursor/mcp.json`
+- Global: `~/.cursor/mcp.json`
+
+Example config:
+
+```json
+{
+  "mcpServers": {
+    "receiptor": {
+      "url": "https://mcp.receiptor.ai"
+    }
+  }
+}
+```
+
+After saving config, use Cursor MCP tools to complete OAuth for the server.
+
+## Windsurf (Cascade)
+
+Windsurf MCP config file:
+
+- `~/.codeium/windsurf/mcp_config.json`
+
+Remote HTTP example:
+
+```json
+{
+  "mcpServers": {
+    "receiptor": {
+      "serverUrl": "https://mcp.receiptor.ai"
+    }
+  }
+}
+```
+
+In Cascade, open MCPs and complete OAuth for the Receiptor server.
+
+## Cline
+
+Open MCP settings from Cline UI:
+
+1. Click **MCP Servers**.
+2. Open **Configure**.
+3. Click **Configure MCP Servers**.
+
+Add a remote server entry in `cline_mcp_settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "receiptor": {
+      "url": "https://mcp.receiptor.ai",
+      "type": "streamableHttp"
+    }
+  }
+}
+```
+
+Then authenticate in Cline when prompted.
+
+## Verify setup
+
+Once connected, run:
+
+- `tools/list`
+
+You should see Receiptor tools such as:
+
+- `documents_search`
+- `documents_get`
+- `workspaces_list`
+
+If a tool call returns organization context errors, re-run OAuth and select the intended workspace.

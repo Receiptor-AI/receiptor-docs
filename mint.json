@@ -66,6 +66,7 @@
       "group": "MCP",
       "pages": [
         "api/mcp/introduction",
+        "api/mcp/client-setup",
         "api/mcp/transport-and-methods",
         "api/mcp/oauth"
       ]
