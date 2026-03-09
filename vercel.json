@@ -11,15 +11,5 @@
       "destination": "/:path*",
       "permanent": false
     }
-  ],
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "https://receiptorai.mintlify.dev/docs"
-    },
-    {
-      "source": "/:path*",
-      "destination": "https://receiptorai.mintlify.dev/docs/:path*"
-    }
   ]
 }
