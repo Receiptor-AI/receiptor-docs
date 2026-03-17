@@ -115,15 +115,21 @@ Current scope:
 Current use:
 
 - promoted from repeated merchant/category corrections
+- explicit merchant/account categorization memories saved by the assistant after resolving the active workspace chart of accounts
 
 Examples:
 
 - merchant canonicalization
-- preferred category for a merchant
+- preferred chart-of-accounts category/account for a merchant
 
 Current scope:
 
 - `org`
+
+Important:
+
+- when a user asks the assistant to remember a categorization like "classify Vercel as software", the assistant should first resolve the active workspace chart of accounts
+- those memories should be saved as structured `canonical_mapping` records, not as free-text `preference` records
 
 ### `workflow_hint`
 
