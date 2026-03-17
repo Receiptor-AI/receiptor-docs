@@ -13,7 +13,8 @@ Receiptor AI separates:
 - learning evidence
 - long-term memory
 
-This page is about the long-term memory layer: `ai-memories`.
+This page is about the long-term memory infrastructure centered on `ai-memories`
+and its relationship to `correction-events`.
 
 ## What `ai-memories` is
 
@@ -71,7 +72,8 @@ Each memory record has:
   - `rejected`
   - `archived`
 
-Records also track confidence, evidence count, and an optional signature used for promotion and deduplication.
+Records also track confidence, evidence count, and stable deduplication keys used
+for explicit saves and candidate upserts.
 
 ## Current rules
 
@@ -116,11 +118,13 @@ Current use:
 
 - promoted from repeated merchant/category corrections
 - explicit merchant/account categorization memories saved by the assistant after resolving the active workspace chart of accounts
+- explicit merchant label memories for recurring labels such as `personal` or `business`
 
 Examples:
 
 - merchant canonicalization
 - preferred chart-of-accounts category/account for a merchant
+- preferred labels for a merchant, such as `["personal"]` or `["business"]`
 
 Current scope:
 
@@ -130,6 +134,8 @@ Important:
 
 - when a user asks the assistant to remember a categorization like "classify Vercel as software", the assistant should first resolve the active workspace chart of accounts
 - those memories should be saved as structured `canonical_mapping` records, not as free-text `preference` records
+- label memories are also structured `canonical_mapping` records
+- labels are the right memory mechanism for repeated classification like personal vs business when the user wants recurring document labels rather than an accounting account
 
 ### `workflow_hint`
 
@@ -201,6 +207,7 @@ Currently meaningful inputs:
 - `canonical_mapping`
   - merchant normalization
   - category preference normalization
+  - label preference hints for downstream classification/routing
 - `workflow_hint`
   - prompt hints
   - routing hints
@@ -213,3 +220,8 @@ Currently meaningful inputs:
 ## Important constraint
 
 Memories should influence planning, routing, normalization, and workflow selection. They should not silently override raw document truth during extraction.
+
+## What is not implemented yet
+
+- a dedicated memory settings UI outside the assistant
+- richer shared discriminated TypeScript types for every memory-content variant in `@receiptor/schemas`
