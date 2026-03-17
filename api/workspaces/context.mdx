@@ -45,3 +45,9 @@ CLI uses selected workspace by sending `X-Receiptor-Org-Id` on capability calls.
 ## Capability equivalent
 
 `workspaces.list` is also exposed in capability discovery and MCP tooling for workspace listing use cases.
+
+## Workspace-scoped defaults
+
+Non-session interfaces also resolve workspace-scoped defaults from the selected organization context.
+
+That includes preferred currency. The active workspace currency takes precedence over the user profile currency, with `usd` as the final fallback.

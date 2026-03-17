@@ -1,0 +1,97 @@
+---
+title: Capability Approvals
+description: How approval-required capability execution works across REST, MCP, CLI, web assistant, and WhatsApp.
+---
+
+## Overview
+
+Some capabilities can preview safely but require explicit approval before execution.
+
+Receiptor now enforces this at the capability layer, not only in the web assistant prompt. That means the same approval policy is reused across:
+
+- REST API and API key clients
+- MCP clients
+- CLI
+- Web assistant
+- WhatsApp assistant
+
+## When approval is required
+
+Common examples:
+
+- `documents.bulk-edit` with `dryRun: false`
+- `documents.resolve-duplicates` with `dryRun: false`
+- `integrations.send-to-integration` with `dryRun: false`
+- `integrations.unlink-document` with `dryRun: false`
+- `entities.cleanup` with `dryRun: false`
+- document archive/unarchive
+- entity delete/merge
+- `rules.execute` with `dryRun: false`
+
+Preview mode remains the default for dry-run capabilities.
+
+## REST API behavior
+
+When a capability requires approval, `POST /v1/capabilities/:slug` returns a successful response with `status: "approval_required"` instead of executing the mutation.
+
+```json
+{
+  "status": "approval_required",
+  "approvalRequestId": "01J...",
+  "capability": {
+    "name": "bulkEditDocuments",
+    "slug": "documents.bulk-edit"
+  },
+  "title": "Apply bulk edit",
+  "description": "Bulk editing updates multiple documents and requires approval before execution."
+}
+```
+
+Resolve it with:
+
+- `approvals.get`
+- `approvals.approve`
+- `approvals.reject`
+
+## MCP behavior
+
+MCP capability tools follow the same policy. Instead of executing immediately, a gated tool call returns an `approval_required` payload and points the client at the approval tools:
+
+- `approvals_get`
+- `approvals_approve`
+- `approvals_reject`
+
+## CLI behavior
+
+The CLI surfaces approval-required executions directly and includes built-in commands:
+
+```bash
+receiptor approval get <approval-request-id>
+receiptor approval approve <approval-request-id>
+receiptor approval reject <approval-request-id> --message "optional reason"
+```
+
+## Web assistant behavior
+
+The web assistant uses LangGraph interrupt/resume. Risky actions pause the graph and render an approval card inline in the conversation.
+
+## WhatsApp behavior
+
+WhatsApp uses reply buttons for approval:
+
+- `Approve`
+- `Reject`
+
+The approval reference is also included in the message footer so the request can be traced outside the button flow if needed.
+
+## Currency resolution
+
+All approval-capable interfaces resolve currency from workspace context first.
+
+Priority order:
+
+1. organization/workspace currency
+2. user fallback currency
+3. `usd`
+
+This matters for preview output because capability previews and execution summaries should reflect the active workspace, not only the individual user profile.

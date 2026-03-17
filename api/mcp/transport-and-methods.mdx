@@ -50,6 +50,29 @@ Send POST requests to MCP root:
 }
 ```
 
+## Approval-required MCP tool calls
+
+If an MCP tool maps to a capability that requires approval, the tool returns a structured payload instead of executing immediately.
+
+Example result:
+
+```json
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"status\": \"approval_required\",\n  \"approvalRequestId\": \"01J...\",\n  \"capability\": {\n    \"name\": \"bulkEditDocuments\",\n    \"slug\": \"documents.bulk-edit\"\n  },\n  \"title\": \"Apply bulk edit\",\n  \"description\": \"Bulk editing updates multiple documents and requires approval before execution.\",\n  \"nextTools\": {\n    \"get\": \"approvals_get\",\n    \"approve\": \"approvals_approve\",\n    \"reject\": \"approvals_reject\"\n  }\n}"
+    }
+  ]
+}
+```
+
+Clients should then call:
+
+- `approvals_get`
+- `approvals_approve`
+- `approvals_reject`
+
 ## Example: list workspaces via MCP capability tool
 
 ```json
@@ -70,3 +93,7 @@ Send POST requests to MCP root:
 - Unknown tool name: JSON-RPC invalid params error
 - Capability execution failure: tool response includes error text
 - OAuth failures include `WWW-Authenticate: Bearer ...` challenge headers
+
+## Workspace currency
+
+MCP capability execution resolves currency from the active workspace first, then falls back to the user profile, then `usd`.

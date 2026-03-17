@@ -61,6 +61,7 @@
             "pages": [
               "api/capabilities/live-catalog",
               "api/capabilities/overview",
+              "api/capabilities/approvals",
               "api/capabilities/discover",
               "api/capabilities/execute"
             ]

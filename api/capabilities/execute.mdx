@@ -40,6 +40,34 @@ curl -s -X POST https://developer.api.receiptor.ai/v1/capabilities/documents.bul
 
 `documents.bulk-edit` defaults to preview mode (`dryRun: true`). Set `dryRun: false` to apply changes.
 
+## Approval-required execution
+
+If you call a gated capability in execute mode, the API returns an approval payload instead of running it immediately.
+
+Example cases:
+
+- `documents.bulk-edit` with `dryRun: false`
+- `documents.resolve-duplicates` with `dryRun: false`
+- `integrations.send-to-integration` with `dryRun: false`
+- `integrations.unlink-document` with `dryRun: false`
+- `entities.cleanup` with `dryRun: false`
+- `rules.execute` with `dryRun: false`
+
+```json
+{
+  "status": "approval_required",
+  "approvalRequestId": "01J...",
+  "capability": {
+    "name": "bulkEditDocuments",
+    "slug": "documents.bulk-edit"
+  },
+  "title": "Apply bulk edit",
+  "description": "Bulk editing updates multiple documents and requires approval before execution."
+}
+```
+
+Approve or reject through the approval capabilities documented in [Capability Approvals](/api/capabilities/approvals).
+
 ## Common errors
 
 - `401` missing/invalid API key

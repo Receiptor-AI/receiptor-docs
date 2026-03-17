@@ -23,6 +23,8 @@ receiptor workspace clear
 
 Capability execution uses selected workspace by setting `X-Receiptor-Org-Id`.
 
+Workspace context also controls org-level defaults such as preferred currency. CLI capability execution resolves currency from the active workspace first, then falls back to the user profile.
+
 ## List capabilities
 
 ```bash
@@ -48,6 +50,16 @@ receiptor documents search '{"query":"uber","limit":5}'
 ```bash
 echo '{"merchant":"Uber","changes":{"category":"Transport"},"dryRun":true}' | receiptor documents bulk-edit
 ```
+
+## Approval commands
+
+```bash
+receiptor approval get 01J...
+receiptor approval approve 01J...
+receiptor approval reject 01J... --message "Not yet"
+```
+
+When a gated capability is called in execute mode, the CLI prints the `approval_required` payload instead of failing. You can then resolve that request with the `approval` commands above.
 
 ## Show input schema help
 
