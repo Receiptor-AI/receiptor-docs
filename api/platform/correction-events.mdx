@@ -1,0 +1,75 @@
+---
+title: Correction Events
+description: The raw learning log behind Receiptor AI memory promotion.
+---
+
+## Overview
+
+`correction-events` is the raw learning log for Receiptor AI.
+
+It is not long-term memory by itself. It is the evidence stream that later promotion logic can turn into typed `ai-memories`.
+
+## What is implemented today
+
+The backend currently logs:
+
+- single-document manual edits
+- bulk edits
+- validation-error dismisses
+- approval approve/reject outcomes
+- rule execution
+- explicit memory submissions
+
+These records are stored in Mongo collection `correction-events`.
+
+## Current event types
+
+- `manual_patch`
+- `bulk_edit`
+- `validation_error_dismiss`
+- `capability_approval_approve`
+- `capability_approval_reject`
+- `agent_approval_approve`
+- `agent_approval_reject`
+- `rule_execute`
+- `memory_submission`
+
+## Why it exists
+
+- it gives the system an auditable learning log
+- it separates evidence from policy
+- it lets promotion logic look for repeated patterns
+- it creates a future base for review flows and evals
+
+## What uses it today
+
+### Memory promotion
+
+The current consumer is memory promotion.
+
+Repeated patterns in `correction-events` can produce `candidate` `ai-memories`.
+
+Implemented promotion patterns today:
+
+- repeated merchant rename -> `canonical_mapping`
+- repeated category correction -> `canonical_mapping`
+- repeated approved integration target -> `integration_preference`
+- repeated approval rejection like `preview first` or `show original` -> `workflow_hint`
+
+### Rule execution events
+
+Rule execution is currently logged as evidence, not treated as memory by itself.
+
+This matters because it shows when a workspace has moved from repeated correction into actual automation. That makes it useful for future workflow learning and evals even if it does not directly create a memory record today.
+
+## Scope behavior
+
+The learning log is workspace-aware.
+
+- events require `orgId`
+- promotion signatures are now org-level, not personal
+- repeated corrections by different users in the same workspace can reinforce the same candidate memory
+
+## Important constraint
+
+`correction-events` should stay broader than the current memory system. Not every event needs to become memory immediately, and that is intentional.

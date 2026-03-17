@@ -51,3 +51,5 @@ CLI uses selected workspace by sending `X-Receiptor-Org-Id` on capability calls.
 Non-session interfaces also resolve workspace-scoped defaults from the selected organization context.
 
 That includes preferred currency. The active workspace currency takes precedence over the user profile currency, with `usd` as the final fallback.
+
+Receiptor AI memory retrieval is also workspace-scoped. Long-term operational memory does not fall back to a personal workspace-less mode.

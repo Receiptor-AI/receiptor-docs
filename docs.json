@@ -53,6 +53,8 @@
             "pages": [
               "api/introduction",
               "api/platform/backend-surfaces",
+              "api/platform/ai-memory",
+              "api/platform/correction-events",
               "api/workspaces/context"
             ]
           },

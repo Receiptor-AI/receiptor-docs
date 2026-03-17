@@ -1,0 +1,209 @@
+---
+title: AI Memory
+description: What Receiptor AI currently stores as long-term memory, how it is scoped, and where it is used.
+---
+
+## Overview
+
+Receiptor AI separates:
+
+- chat history
+- execution state
+- approval state
+- learning evidence
+- long-term memory
+
+This page is about the long-term memory layer: `ai-memories`.
+
+## What `ai-memories` is
+
+`ai-memories` stores reusable behavior and preferences that the system can apply across sessions.
+
+It is intentionally separate from:
+
+- Redis chat history
+- LangGraph thread checkpoints
+- approval request persistence
+- `correction-events`
+
+`correction-events` is the learning log. `ai-memories` is the durable memory layer that agents and ECR can actually use.
+
+## What is implemented today
+
+Today `ai-memories` is used in two ways:
+
+- explicit memory saved through `memories.save`
+- candidate memory promotion from repeated `correction-events`
+- assistant-facing review and removal through `memories.list` and `memories.archive`
+
+Today the system consumes `active` memories in:
+
+- the web assistant
+- the WhatsApp assistant
+- the ECR extraction pipeline
+
+## Memory model
+
+Each memory record has:
+
+- `scope`
+  - `user`
+  - `org`
+  - `document`
+  - `agent`
+- `kind`
+  - implemented in current runtime surfaces:
+    - `preference`
+    - `canonical_mapping`
+    - `workflow_hint`
+    - `integration_preference`
+  - reserved in the shared schema for future workflow intelligence:
+    - `approval_policy_hint`
+    - `playbook`
+- `source`
+  - `user_declared`
+  - `manual_correction`
+  - `approval_history`
+  - `system`
+- `status`
+  - `active`
+  - `candidate`
+  - `rejected`
+  - `archived`
+
+Records also track confidence, evidence count, and an optional signature used for promotion and deduplication.
+
+## Current rules
+
+### Workspace-first behavior
+
+Operational memories are workspace-scoped by default.
+
+- promoted merchant/category/integration/workflow memories are `org` scoped
+- `user` scope is only allowed for explicit `preference` memories
+- document-scoped memories still require workspace context
+- memory operations require `orgId`
+
+This is deliberate. Shared operational behavior like categorization, canonical merchant names, and integration targeting should converge at workspace level, not per individual user.
+
+### Activation behavior
+
+- promotion currently creates `candidate` memories only
+- only `active` memories are injected into runtime context
+- nothing auto-activates from a single correction or approval outcome
+
+## What we currently save
+
+### `preference`
+
+Current use:
+
+- explicit user-declared memory
+
+Examples:
+
+- response style preferences
+- presentation preferences
+- narrow personal assistant behavior
+
+Current scope:
+
+- `user`, `org`, or `document`
+
+### `canonical_mapping`
+
+Current use:
+
+- promoted from repeated merchant/category corrections
+
+Examples:
+
+- merchant canonicalization
+- preferred category for a merchant
+
+Current scope:
+
+- `org`
+
+### `workflow_hint`
+
+Current use:
+
+- promoted from repeated approval rejection feedback
+
+Examples:
+
+- preview first
+- show original before changing
+
+Current scope:
+
+- `org`
+
+### `integration_preference`
+
+Current use:
+
+- promoted from repeated approved integration targets
+
+Current scope:
+
+- `org`
+
+### Reserved kinds
+
+`playbook` and `approval_policy_hint` remain in the shared schema as reserved
+types for future workflow intelligence. They are not currently accepted by the
+memory capability surface, promoted by the learning system, or consumed by
+runtime retrieval.
+
+## Where each type is used today
+
+### Web assistant
+
+The web assistant reads `active` memories and injects them into planning context.
+
+Currently relevant:
+
+- `preference`
+- `canonical_mapping`
+- `workflow_hint`
+- `integration_preference`
+
+### WhatsApp assistant
+
+The WhatsApp assistant uses the same long-term memory context model as the web assistant.
+
+Currently relevant:
+
+- `preference`
+- `canonical_mapping`
+- `workflow_hint`
+- `integration_preference`
+
+### ECR
+
+ECR reads `active` memories and turns them into:
+
+- `promptHints`
+- `routingHints`
+- `entityHints`
+- `normalizationHints`
+
+Currently meaningful inputs:
+
+- `canonical_mapping`
+  - merchant normalization
+  - category preference normalization
+- `workflow_hint`
+  - prompt hints
+  - routing hints
+  - sender-domain hints
+- `integration_preference`
+  - normalization context for downstream integration-aware behavior
+- `preference`
+  - prompt hints only
+
+## Important constraint
+
+Memories should influence planning, routing, normalization, and workflow selection. They should not silently override raw document truth during extraction.
