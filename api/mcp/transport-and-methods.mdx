@@ -19,7 +19,14 @@ Send POST requests to MCP root:
   "jsonrpc": "2.0",
   "id": 1,
   "method": "initialize",
-  "params": {}
+  "params": {
+    "protocolVersion": "2025-11-25",
+    "capabilities": {},
+    "clientInfo": {
+      "name": "example-client",
+      "version": "1.0.0"
+    }
+  }
 }
 ```
 
@@ -33,12 +40,28 @@ Send POST requests to MCP root:
 }
 ```
 
-## Example: call capability tool
+`tools/list` responses include a stable `title` plus MCP annotations such as `readOnlyHint` and `destructiveHint` so clients can present safer UX around side effects.
+
+## Example: call public native tool
 
 ```json
 {
   "jsonrpc": "2.0",
   "id": 3,
+  "method": "tools/call",
+  "params": {
+    "name": "get_server_info",
+    "arguments": {}
+  }
+}
+```
+
+## Example: call capability tool
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 4,
   "method": "tools/call",
   "params": {
     "name": "documents_search",
@@ -78,7 +101,7 @@ Clients should then call:
 ```json
 {
   "jsonrpc": "2.0",
-  "id": 4,
+  "id": 5,
   "method": "tools/call",
   "params": {
     "name": "workspaces_list",
@@ -87,9 +110,27 @@ Clients should then call:
 }
 ```
 
+## Example: switch active workspace for the current MCP session
+
+```json
+{
+  "jsonrpc": "2.0",
+  "id": 6,
+  "method": "tools/call",
+  "params": {
+    "name": "workspace_switch",
+    "arguments": {
+      "orgId": "org_123"
+    }
+  }
+}
+```
+
 ## Error behavior
 
 - Missing bearer token for protected method: JSON-RPC unauthorized error
+- Missing required OAuth scope: JSON-RPC error with `oauthError: "insufficient_scope"`
+- Missing `mcp_access` entitlement for non-bootstrap tools: `403` before tool execution
 - Unknown tool name: JSON-RPC invalid params error
 - Capability execution failure: tool response includes error text
 - OAuth failures include `WWW-Authenticate: Bearer ...` challenge headers

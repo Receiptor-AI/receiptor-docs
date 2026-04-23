@@ -1,6 +1,6 @@
 ---
 title: MCP Introduction
-description: Receiptor MCP server, transport, tools, and workspace behavior.
+description: Receiptor MCP endpoints, auth behavior, tool naming, and workspace flow.
 ---
 
 ## Endpoints
@@ -15,6 +15,8 @@ MCP is available via:
 - Transport: Streamable HTTP
 - Payload format: JSON-RPC 2.0
 - Tool registration: dynamic from backend capability registry
+- Tool metadata: human-readable titles plus MCP annotations for read-only and destructive hints
+- Protocol version is negotiated during `initialize`
 
 ## Public methods
 
@@ -22,14 +24,26 @@ No bearer token required:
 
 - `initialize`
 - `notifications/initialized`
+- `notifications/cancelled`
 - `tools/list`
 - `prompts/list`
 - `resources/list`
 - `ping`
 
-## Protected methods
+## Public native tool
 
-`tools/call` requires OAuth bearer token.
+The native `get_server_info` tool is callable without OAuth so clients can verify connectivity before auth.
+
+## Protected tool calls
+
+Most `tools/call` requests require an OAuth bearer token.
+
+There are two important exceptions in behavior:
+
+- `get_server_info` is public
+- `workspace_get_context`, `workspaces_list`, and `workspace_switch` can run before an org is selected for the current OAuth session
+
+For non-bootstrap capability tools, the current plan must include `mcp_access`.
 
 ## Tool naming
 
@@ -46,7 +60,8 @@ Examples:
 - `workspace_get_context`
 - `workspace_switch`
 
-`workspace_switch` validates target workspace and explains that MCP workspace switching requires OAuth re-authorization with a different `org_id`.
+`workspace_switch` validates the target workspace and updates the active workspace for the current OAuth session.
+Re-authorize only if the client loses its OAuth session or cannot complete the switch flow.
 
 ## Client configuration examples
 

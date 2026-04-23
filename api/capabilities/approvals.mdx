@@ -53,6 +53,36 @@ Resolve it with:
 - `approvals.approve`
 - `approvals.reject`
 
+Common response shapes:
+
+```json
+{
+  "id": "01J...",
+  "status": "pending",
+  "interfaceType": "mcp",
+  "capabilitySlug": "documents.bulk-edit",
+  "title": "Apply bulk edit"
+}
+```
+
+```json
+{
+  "approvalRequestId": "01J...",
+  "status": "executed",
+  "capabilitySlug": "documents.bulk-edit",
+  "result": {}
+}
+```
+
+```json
+{
+  "approvalRequestId": "01J...",
+  "status": "rejected",
+  "capabilitySlug": "documents.bulk-edit",
+  "rejectionMessage": "Not yet"
+}
+```
+
 ## MCP behavior
 
 MCP capability tools follow the same policy. Instead of executing immediately, a gated tool call returns an `approval_required` payload and points the client at the approval tools:

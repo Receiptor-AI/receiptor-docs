@@ -24,6 +24,7 @@ Then inside Claude Code:
 1. Run `/mcp`.
 2. Authenticate with OAuth.
 3. Select the workspace you want to authorize.
+4. Call `workspace_get_context` to confirm the active workspace.
 
 Useful commands:
 
@@ -53,12 +54,13 @@ Example config:
 ```
 
 After saving config, use Cursor MCP tools to complete OAuth for the server.
+Then call `workspace_get_context` to verify the current workspace and `workspace_switch` if you need to change it.
 
 ## Windsurf (Cascade)
 
 Windsurf MCP config file:
 
-- `~/.codeium/windsurf/mcp_config.json`
+- `~/.codeium/mcp_config.json`
 
 Remote HTTP example:
 
@@ -73,6 +75,7 @@ Remote HTTP example:
 ```
 
 In Cascade, open MCPs and complete OAuth for the Receiptor server.
+Verify the active workspace with `workspace_get_context`.
 
 ## Cline
 
@@ -96,12 +99,15 @@ Add a remote server entry in `cline_mcp_settings.json`:
 ```
 
 Then authenticate in Cline when prompted.
+Use `workspace_get_context` to confirm the session workspace.
 
 ## Verify setup
 
 Once connected, run:
 
 - `tools/list`
+- `tools/call` with `get_server_info`
+- `tools/call` with `workspace_get_context`
 
 You should see Receiptor tools such as:
 
@@ -109,4 +115,6 @@ You should see Receiptor tools such as:
 - `documents_get`
 - `workspaces_list`
 
-If a tool call returns organization context errors, re-run OAuth and select the intended workspace.
+If `workspace_get_context` shows no active workspace, call `workspaces_list`, then `workspace_switch` with the target `orgId`.
+If a mutation returns `approval_required`, continue with `approvals_get`, `approvals_approve`, or `approvals_reject`.
+Re-run OAuth only if your client no longer has a valid MCP session.

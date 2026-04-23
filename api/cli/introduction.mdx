@@ -1,32 +1,60 @@
 ---
 title: CLI Overview
-description: Use the Receiptor CLI to manage workspace context and execute capabilities.
+description: Use the Receiptor CLI to authenticate, inspect workspaces, execute capabilities, upload files, and install bundled skills.
 ---
 
 ## What the CLI does
 
-The CLI is a thin client over external API endpoints.
+The CLI documented here is `@receiptor/cli`.
+
+It is a thin client over external API endpoints with a few local convenience commands for file upload, diagnostics, and bundled skill installation.
 
 It supports:
 
 - API key authentication
 - workspace context management
 - capability discovery and execution
+- approval resolution
+- local file upload
+- bundled skill installation for supported agents
 
 ## Install
 
+Recommended:
+
+```bash
+curl -fsSL https://receiptor.ai/install.sh | bash
+```
+
+Alternative:
+
 ```bash
 npm i -g @receiptor/cli
+```
+
+One-off run:
+
+```bash
+npx @receiptor/cli --help
 ```
 
 ## Built-in commands
 
 - `receiptor auth <api-key>`
 - `receiptor auth --status`
+- `receiptor approval get <id>`
+- `receiptor approval approve <id>`
+- `receiptor approval reject <id>`
 - `receiptor workspace --status`
 - `receiptor workspace list`
 - `receiptor workspace use <org-id>`
 - `receiptor workspace clear`
+- `receiptor doctor`
+- `receiptor version`
+- `receiptor skills list`
+- `receiptor skills install`
+- `receiptor skills path`
+- `receiptor files upload <local-path>`
 - `receiptor list`
 - `receiptor <resource> <action> [flags]`
 
@@ -39,6 +67,8 @@ npm i -g @receiptor/cli
 - Workspace source:
   - `RECEIPTOR_ORG_ID`, or
   - local config file (`receiptor workspace use`)
+- Host override:
+  - `RECEIPTOR_HOST` in non-production environments
 
 ## Config file
 
@@ -50,3 +80,6 @@ Fields include:
 
 - `apiKey`
 - `orgId`
+- `host`
+- `latestVersion`
+- `lastVersionCheckAt`

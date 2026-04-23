@@ -5,7 +5,10 @@ description: List workspaces and apply organization context in API, CLI, and MCP
 
 ## Why workspace context exists
 
-Receiptor users can belong to multiple workspaces. Non-session interfaces (API key, CLI, MCP) must run in an explicit workspace context.
+Receiptor AI users can belong to multiple workspaces.
+
+- REST and CLI use explicit org context on each request.
+- MCP stores workspace context on the OAuth session and can switch it during the session.
 
 ## List available workspaces (REST)
 
@@ -45,6 +48,14 @@ CLI uses selected workspace by sending `X-Receiptor-Org-Id` on capability calls.
 ## Capability equivalent
 
 `workspaces.list` is also exposed in capability discovery and MCP tooling for workspace listing use cases.
+
+For MCP sessions, use:
+
+- `workspace_get_context` to inspect the current active workspace
+- `workspaces_list` to list accessible workspaces
+- `workspace_switch` to change the active workspace for the current OAuth session
+
+If no workspace is active yet, `workspace_get_context` returns `requiresWorkspaceSelection: true` and points you to `workspaces_list` and `workspace_switch`.
 
 ## Workspace-scoped defaults
 

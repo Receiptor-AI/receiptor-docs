@@ -1,0 +1,68 @@
+---
+title: MCP Reviewer Guide
+description: Support links, testing guidance, troubleshooting, and example prompts for reviewing the Receiptor MCP server.
+---
+
+## Purpose
+
+This page collects the operational details typically needed for MCP directory review:
+
+- product purpose
+- support and privacy contacts
+- troubleshooting guidance
+- example prompts
+- testing account expectations
+
+## Product purpose
+
+Receiptor MCP gives authenticated users structured access to bookkeeping workflows backed by their Receiptor workspace, including:
+
+- document search and inspection
+- duplicate review
+- workspace readiness checks
+- spend analysis
+- approval-gated mutations such as bulk edits, archival, and integration sends
+
+## Support and policy links
+
+- Privacy policy: https://receiptor.ai/privacy
+- Help center: https://help.receiptor.ai
+- Support contact: mailto:info@receiptor.ai
+- Status page: https://status.receiptor.ai
+- Developer docs: https://docs.receiptor.ai/api/mcp/introduction
+
+Primary contact:
+
+- `info@receiptor.ai`
+
+## Example prompts
+
+Use these in any MCP-capable client after OAuth is complete.
+
+1. Find my Uber receipts from the last 30 days and summarize the total spend.
+2. Show duplicate invoice candidates in my current workspace and inspect the most likely match.
+3. Preview changing all Grab receipts this month to category `Meals` without applying the change yet.
+
+## Troubleshooting
+
+- If `tools/call` returns authentication errors, reconnect the MCP server and complete OAuth again.
+- If the active workspace is wrong, call `workspace_get_context`, then `workspaces_list`, then `workspace_switch`.
+- If a tool returns `approval_required`, continue with `approvals_get`, `approvals_approve`, or `approvals_reject`.
+- If a tool returns `insufficient_scope`, reconnect with broader scopes or ask the workspace admin to grant the needed access.
+
+## Testing account
+
+Anthropic reviewers should be given a dedicated test workspace with seeded sample documents, integrations, and at least one approval-capable scenario.
+
+Recommended review fixture:
+
+- 10-20 sample receipts and invoices
+- at least 1 duplicate candidate set
+- at least 1 email or accounting integration fixture
+- at least 1 approval-required workflow such as `documents_bulk_edit` with `dryRun: false`
+
+Operational note for Receiptor maintainers:
+
+- provision a standard review account or workspace invite before submission
+- keep the sample data stable across reviews so prompt examples remain reproducible
+- do not reuse a production customer workspace for directory review

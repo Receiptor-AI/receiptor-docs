@@ -10,6 +10,14 @@ receiptor auth sk_...
 receiptor auth --status
 ```
 
+## Diagnostics and version
+
+```bash
+receiptor doctor
+receiptor version
+receiptor --version
+```
+
 ## Workspace context commands
 
 ```bash
@@ -31,7 +39,7 @@ Workspace context also controls org-level defaults such as preferred currency. C
 receiptor list
 ```
 
-Calls `GET /v1/capabilities` and prints capability metadata.
+Calls `GET /v1/capabilities` and prints built-in commands plus capability metadata discovered from the API.
 
 ## Execute capability with flags
 
@@ -64,7 +72,41 @@ When a gated capability is called in execute mode, the CLI prints the `approval_
 ## Show input schema help
 
 ```bash
+receiptor documents --help
 receiptor documents search --help
 ```
 
-This fetches discovery output and prints selected capability `inputSchema`.
+This fetches discovery output and prints resource actions or the selected capability `inputSchema`.
+
+## Upload a local file
+
+```bash
+receiptor files upload ./receipt.pdf
+receiptor files upload ~/Downloads/invoice.jpg
+```
+
+The CLI reads the local file, infers the MIME type, and uploads it through Receiptor's multipart file endpoint.
+
+Supported file types:
+
+- `.jpg`
+- `.jpeg`
+- `.png`
+- `.gif`
+- `.webp`
+- `.bmp`
+- `.tif`
+- `.tiff`
+- `.pdf`
+
+Current max upload size is `10MB`.
+
+## Bundled skills
+
+```bash
+receiptor skills list
+receiptor skills install
+receiptor skills install --agent codex
+receiptor skills install --skill receipt-intake
+receiptor skills path --agent codex
+```

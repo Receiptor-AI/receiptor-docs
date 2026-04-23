@@ -8,8 +8,8 @@ description: Host/path/auth mapping for API, MCP, and CLI.
 The backend exposes three integration surfaces:
 
 - External API
-- MCP server (JSON-RPC)
-- CLI (wrapper over External API)
+- MCP server (JSON-RPC over Streamable HTTP)
+- CLI (`@receiptor/cli`, a thin client over the External API plus a few local helpers)
 
 ## Host and route mapping
 
@@ -30,20 +30,32 @@ The backend exposes three integration surfaces:
 - JSON-RPC endpoint:
   - `POST /mcp/` on API host
   - `POST /` on MCP host
-- Protected method: `tools/call` (OAuth bearer token required)
+- Public JSON-RPC methods:
+  - `initialize`
+  - `tools/list`
+  - `prompts/list`
+  - `resources/list`
+  - `ping`
+- Protected method:
+  - `tools/call` (OAuth bearer token required, except for the public `get_server_info` tool)
 
 ### CLI
 
 - Binary: `receiptor`
 - Default host: `https://developer.api.receiptor.ai`
-- Built-in commands: `auth`, `workspace`, `list`
+- Built-in commands:
+  - `auth`, `approval`, `workspace`, `doctor`, `version`, `skills`, `list`, `files upload`
 - Capability execution: `receiptor <resource> <action>`
 
 ## Workspace context rules
 
 - API key calls can set workspace via `X-Receiptor-Org-Id`.
 - CLI sets the same header using `receiptor workspace use <org-id>` (or `RECEIPTOR_ORG_ID`).
-- MCP OAuth tokens are authorized for a selected `org_id`; switching workspace requires re-authorization.
+- MCP OAuth sessions can bootstrap without an active org context by using:
+  - `workspace_get_context`
+  - `workspaces_list`
+  - `workspace_switch`
+- After OAuth, switching workspace normally does not require re-authorization. The client should call `workspace_switch` for the target `orgId`.
 
 ## Production hosts
 

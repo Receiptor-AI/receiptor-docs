@@ -15,6 +15,12 @@ Authorization Server Metadata:
 
 Use metadata as the source of truth for current OAuth endpoints.
 
+Today those metadata responses resolve to the Receiptor app and API hosts:
+
+- authorization UI: `https://app.receiptor.ai/oauth/authorize`
+- token exchange: `https://api.receiptor.ai/v1/oauth/token`
+- dynamic client registration: `https://api.receiptor.ai/v1/oauth/register`
+
 ## Dynamic client registration
 
 Register a client with:
@@ -31,11 +37,12 @@ Common fields:
 
 1. Read authorization metadata.
 2. Send user to `authorization_endpoint` with PKCE (`code_challenge`, `code_challenge_method=S256`).
-3. User selects workspace in Receiptor authorization UI.
+3. User signs in and selects a workspace in the Receiptor authorization UI.
 4. Exchange code at `token_endpoint`.
 
-MCP tokens are workspace-bound through selected `org_id`.
-To switch workspace, re-authorize with the target `org_id`.
+MCP tokens are workspace-bound through the workspace selected during authorization.
+After authorization, use `workspace_switch` to move the active MCP session to another workspace you can access.
+Re-authorize only if your client loses the OAuth session or does not expose the switch tool flow cleanly.
 
 ## Supported scopes
 
@@ -44,11 +51,15 @@ Current scopes include:
 - `all`
 - `read_documents`
 - `write_documents`
+- `read_entities`
+- `write_entities`
 - `read_time_capsules`
 - `write_time_capsules`
 - `read_currency`
 - `read_integrations`
 - `write_integrations`
+- `read_memories`
+- `write_memories`
 - `read_rules`
 - `write_rules`
 - `read_workspaces`
